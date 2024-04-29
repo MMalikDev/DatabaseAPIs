@@ -1,0 +1,25 @@
+{% extends 'core.html' %}
+
+<!--  -->
+
+{% block content %}
+
+<!--  -->
+
+{% include 'components/header.html' %}
+
+<main id="content">
+  <div class="container">
+    <!--  -->
+
+    {% block main %} {% endblock %}
+
+    <!--  -->
+  </div>
+</main>
+
+{% include 'components/footer.html' %}
+
+<!--  -->
+
+{% endblock content %}

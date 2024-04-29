@@ -1,0 +1,81 @@
+sequence-diagram
+
+// typeface clean
+// styleMode plain
+// colorMode outline
+
+// Columns Styles
+Client [icon: user, color: black]
+Traefik [icon: traefik, color: 24A1C1]
+FastAPI [icon: fastapi, color: 009688]
+Redis [icon: redis, color: DC382D]
+Postgres [icon: postgres, color: 4169E1]
+MongoDB  [icon: mongodb, color: 47A248]
+
+order Client, Traefik, FastAPI, Redis, Postgres, MongoDB
+
+// Get JWT
+Client > Traefik: Login
+activate Client
+activate Traefik
+deactivate Client
+
+Traefik > FastAPI: Send Credentials
+activate FastAPI
+deactivate Traefik
+
+FastAPI <> Postgres: Validate Credentials
+activate Postgres
+deactivate Postgres
+
+break [icon: x-square, color: red, label: Invalid] {
+    FastAPI > Client: 401 Unauthorized Status
+    activate Client
+    deactivate Client
+}
+opt [icon: check-square, color: green, label: Valid] {
+    FastAPI > Client: Return JWT
+    activate Client
+    deactivate Client
+    deactivate FastAPI
+    activate Client
+    deactivate Client
+}
+
+// Get Resources
+Client > Traefik: Request with JWT
+activate Client
+activate Traefik
+
+Traefik > FastAPI: Use API
+activate FastAPI
+deactivate Traefik
+
+loop [icon: lock , color: 326CE5, label: Validate Token]  {
+    FastAPI <> FastAPI
+}
+
+break [icon: x-square, color: red, label: Invalid] {
+    FastAPI > Client: 401 Unauthorized Status
+}
+opt [icon: check-square, color: green, label: Valid] {
+    FastAPI <> Redis: Get Resources
+    activate Redis
+    deactivate Redis
+    
+    FastAPI <> Postgres: Get Resources
+    activate Postgres
+    deactivate Postgres
+    
+    FastAPI > Redis: Save to cache
+    activate Redis
+    deactivate Redis
+    
+    FastAPI <> MongoDB: Get Resources
+    activate MongoDB
+    deactivate MongoDB
+    
+    FastAPI > Client: Return Resources
+    deactivate FastAPI
+    deactivate Client
+}

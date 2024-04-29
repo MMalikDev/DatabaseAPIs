@@ -1,0 +1,129 @@
+/* Header */
+header {
+  z-index: 999;
+  position: relative;
+}
+.page-header {
+  width: 100%;
+  display: flex;
+  padding: 0 1rem;
+  position: fixed;
+  inset: 0 0 auto 0;
+  justify-content: space-between;
+  background-color: var(--header-color-bg);
+}
+.logo {
+  display: grid;
+  cursor: pointer;
+  padding: 0.75rem;
+  place-items: center;
+}
+
+/* Navigation */
+.menu-toggle {
+  border: none;
+  display: flex;
+  cursor: pointer;
+  padding: 0.75rem;
+  background: transparent;
+}
+
+.primary-navigation {
+  font-size: 1.5rem;
+  min-height: 50dvh;
+  position: absolute;
+  inset: 100% -100% auto auto;
+  gap: 1rem;
+  padding: 1rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-evenly;
+  border-radius: 0 0 0 1rem;
+  background-color: var(--nav-color-bg);
+}
+.primary-navigation[data-state="opened"] {
+  inset: 100% 0 auto;
+  animation: open-nav 300ms ease-in;
+  box-shadow: 0 0 0 100dvh rgba(0, 0, 0, 0.4);
+}
+.primary-navigation[data-state="closing"] {
+  animation: close-nav 300ms ease-out;
+}
+
+.nav-item {
+  display: flex;
+}
+.nav-link {
+  color: inherit;
+  text-decoration: none;
+}
+.nav-link[aria-current="page"] {
+  color: var(--nav-color);
+  border-bottom: 0.125rem solid var(--nav-color-border);
+}
+.nav-link:not([aria-current="page"]):hover,
+.nav-link:not([aria-current="page"]):focus {
+  color: var(--nav-color-hover);
+}
+
+/* Main */
+main {
+  min-height: 100dvh;
+  margin: var(--header-height) auto 0;
+}
+
+/* Footer */
+footer {
+  padding: 1rem;
+  text-align: center;
+
+  background-color: var(--footer-color-bg);
+}
+
+/* ----------------------------------------------------------------- */
+/* Media Query                                                       */
+/* ----------------------------------------------------------------- */
+@media only screen and (min-width: 600px) {
+  .page-header {
+    padding: 0 2rem;
+  }
+  .menu-toggle {
+    display: none;
+  }
+  .primary-navigation {
+    font-size: 1rem;
+    position: static;
+    background: inherit;
+    flex-direction: row;
+    min-height: fit-content;
+  }
+}
+
+/* ----------------------------------------------------------------- */
+/* Animations                                                        */
+/* ----------------------------------------------------------------- */
+@keyframes open-nav {
+  0% {
+    opacity: 0;
+    inset: 100% -100% auto auto;
+    transform: translateX(100%);
+  }
+  100% {
+    opacity: 1;
+    inset: 100% 0 auto;
+    transform: translateX(0%);
+  }
+}
+@keyframes close-nav {
+  0% {
+    opacity: 1;
+    inset: 100% 0 auto;
+    transform: translateX(0%);
+  }
+  100% {
+    opacity: 0;
+    inset: 100% -100% auto auto;
+    transform: translateX(100%);
+  }
+}

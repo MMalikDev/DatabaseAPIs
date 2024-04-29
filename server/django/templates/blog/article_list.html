@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+<!--  -->
+
+{% block main %}
+
+<div class="wrapper">
+  <h1>Articles</h1>
+
+  <div class="flex">
+    <a class="btn btn-secondary" href="{% url 'blog:form' %}"> Form </a>
+    <a class="btn btn-secondary" href="{% url 'blog:create' %}"> Create </a>
+  </div>
+  <ul>
+    {% for article in object_list %}
+    <li>
+      <span class="flex">
+        <span>{{ article.pk }}</span>
+
+        <a class="btn" href="{{ article.get_absolute_url }}">
+          {{ article.title }}
+        </a>
+
+        <!--  -->
+
+        {% if user.is_authenticated and user == article.owner %}
+        <a class="btn btn-secondary" href="{% url 'blog:update' article.pk %}">
+          Update
+        </a>
+
+        <a class="btn btn-secondary" href="{% url 'blog:delete' article.pk  %}">
+          Delete
+        </a>
+        {% endif %}
+      </span>
+    </li>
+
+    {% empty %}
+    <li>No articles yet.</li>
+
+    {% endfor %}
+  </ul>
+</div>
+
+{% endblock main %}

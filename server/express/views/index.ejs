@@ -1,0 +1,161 @@
+<% function formatTitle(string) { return `${string}`.split('_').map(word =>
+word.charAt(0).toUpperCase() + word.slice(1)).join(' ') }%>
+
+<!--  -->
+
+<% function renderTable(obj, name) { %>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <% for (const header of Object.keys(obj[0] || [])) { { %>
+
+        <th><%= formatTitle(header) %></th>
+
+        <% }}%>
+
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% obj.forEach((item) => { %>
+
+      <tr>
+        <% for (const field of Object.keys(item)) { if
+        (Array.isArray(item[field])) { { %>
+
+        <td>
+          <ul class="list-group">
+            <% for (const reference of item[field]) {{ %>
+
+            <li class="list-group-item">
+              <%= reference[Object.keys(reference)[1]] %>
+            </li>
+
+            <% }}%>
+          </ul>
+        </td>
+
+        <%} } else { { %>
+
+        <td><%= item[field] %></td>
+
+        <% } } } %>
+
+        <td>
+          <a class="btn btn-dark" href="/api/<%-name%>/<%-item._id%>">
+            <i class="bi bi-info-circle d-flex justify-content-center"></i>
+          </a>
+
+          <button
+            type="button"
+            class="btn btn-dark"
+            data-bs-toggle="modal"
+            data-bs-target="#<%-name%>Modal"
+            onclick="getDetails('<%-name%>', '<%-item._id%>')"
+          >
+            <i class="bi bi-pencil-square d-flex justify-content-center"></i>
+          </button>
+
+          <button
+            class="btn btn-dark"
+            onclick="sendDelete('<%-name%>', '<%-item._id%>')"
+          >
+            <i class="bi bi-trash3 d-flex justify-content-center"></i>
+          </button>
+        </td>
+      </tr>
+
+      <% }) %>
+    </tbody>
+  </table>
+</div>
+<% } %>
+
+<!--  -->
+
+<% function renderModals(name) { %>
+<div
+  class="modal fade"
+  id="<%-name%>Modal"
+  tabindex="-1"
+  aria-labelledby="<%-name%>-update-form"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="<%-name%>UpdateModal">
+          Update <%= formatTitle(name) %>: ID <%= 'LocalStorage' %>
+        </h1>
+      </div>
+
+      <div class="modal-body">
+        <form
+          onsubmit="sendUpdate(event)"
+          action="<%= `/api/${name}` %>"
+          class="d-flex flex-column gap-3 justify-content-center align-items-center my-5"
+        >
+          <input class="visually-hidden" name="id" type="text" required />
+          <%- include(`./partials/forms/${name}.ejs`); %>
+          <button class="btn btn-success" type="submit">Save Changes</button>
+        </form>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<% } %>
+
+<!--  -->
+
+<ul
+  class="nav nav-tabs justify-content-center"
+  id="EndpointTabs"
+  role="tablist"
+>
+  <% for (const name of Object.keys(data)) {%>
+
+  <li class="nav-item" role="presentation">
+    <button
+      class="nav-link"
+      aria-selected="false"
+      id="<%= `${name}-tab` %>"
+      aria-controls="<%= `${name}-tab-pane` %>"
+      data-bs-target="<%= `#${name}-tab-pane` %>"
+      data-bs-toggle="tab"
+      type="button"
+      role="tab"
+    >
+      <%= formatTitle(name) %>
+    </button>
+  </li>
+  <%} %>
+</ul>
+
+<div class="tab-content" id="TabContent">
+  <% for (const [name, obj] of Object.entries(data)) {%>
+  <div
+    class="tab-pane fade"
+    id="<%= `${name}-tab-pane` %>"
+    role="tabpanel"
+    aria-labelledby="<%= `${name}-tab` %>"
+    tabindex="0"
+  >
+    <form
+      onsubmit="sendCreate(event)"
+      action="<%= `/api/${name}` %>"
+      class="d-flex flex-column gap-3 justify-content-center align-items-center my-5"
+    >
+      <%- include(`./partials/forms/${name}.ejs`); %>
+      <button class="btn btn-success" type="submit">Submit</button>
+    </form>
+    <%- renderTable(obj, name); %> <%- renderModals(name); %>
+  </div>
+  <% }%>
+</div>

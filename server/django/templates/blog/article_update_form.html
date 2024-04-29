@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+<!--  -->
+
+{% block main %}
+
+<div class="wrapper">
+  <h1 class="text-8xl">Create New Article</h1>
+  <form class="form" method="post">
+    {% csrf_token %} {{ form }}
+
+    <div class="form-group">
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+
+    <a class="btn btn-secondary" href="{% url 'blog:detail' object.id  %}">
+      Cancel
+    </a>
+  </form>
+</div>
+
+{% endblock main %}

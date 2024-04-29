@@ -1,0 +1,17 @@
+services:
+  devcontainer:
+    build: .
+    container_name: devcontainer
+    image: vscode_devcontainer
+    command: sleep infinity
+
+    volumes:
+      - ../..:/workspaces:cached
+
+    networks:
+      workspaces:
+
+networks:
+  workspaces:
+    name: vscode
+    driver: bridge

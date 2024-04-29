@@ -1,0 +1,93 @@
+sequence-diagram
+
+// typeface clean
+// styleMode plain
+// colorMode outline
+
+// Columns Styles
+Client [icon: user, color: black]
+Traefik [icon: traefik, color: 24A1C1]
+Django [icon: django, color: 092E20]
+Postgres [icon: postgres, color: 4169E1]
+
+order Client, Traefik, Django, Postgres
+
+// Get CSRF Token
+Client > Traefik: Request Login Form
+activate Client
+activate Traefik
+
+Traefik <> Django: Get Template with CSRF Token
+activate Django
+
+Django <> Postgres: Save CSRF Token
+activate Postgres
+deactivate Postgres
+deactivate Django
+
+Traefik > Client: Return Form
+deactivate Traefik
+deactivate Client
+
+// Get Session Coookie
+Client > Traefik: Login
+activate Client
+activate Traefik
+deactivate Client
+
+Traefik > Django: Send Credentials
+activate Django
+deactivate Traefik
+
+Django <> Postgres: Validate CSRF Token
+activate Postgres
+deactivate Postgres
+break [icon: x-square, color: red, label: Invalid] {
+    Django > Client: 403 Forbidden Status
+    activate Client
+    deactivate Client
+}
+
+Django <> Postgres: Validate Credentials
+activate Postgres
+deactivate Postgres
+break [icon: x-square, color: red, label: Invalid] {
+    Django > Client: 401 Unauthorized Status
+    activate Client
+    deactivate Client
+}
+opt [icon: check-square, color: green, label: Valid] {
+    Django > Client: Return Session Cookie
+    activate Client
+    deactivate Client
+    deactivate Django
+    activate Client
+    deactivate Client
+}
+
+// Get Resources
+Client > Traefik: Request with Cookie
+activate Client
+activate Traefik
+
+Traefik > Django: Use API
+activate Django
+deactivate Traefik
+
+Django <> Postgres:  Validate Session Cookie
+activate Postgres
+deactivate Postgres
+
+break [icon: x-square, color: red, label: Invalid] {
+    Django > Client: 401 Unauthorized Status
+}
+
+opt [icon: check-square, color: green, label: Valid] {
+    Django <> Postgres: Get Resources
+    activate Postgres
+    deactivate Postgres
+    
+    Django > Client: Return Resources
+    deactivate Django
+    deactivate Client
+}

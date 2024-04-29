@@ -1,0 +1,39 @@
+<div>
+  <div class="d-flex flex-wrap gap-2 justify-content-center">
+    <div class="flex-grow-1">
+      <label for="name" class="visually-hidden">Album Title</label>
+      <input
+        id="name"
+        class="form-control"
+        placeholder="Album Name"
+        name="title"
+        type="text"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 justify-content-center">
+    <div class="flex-grow-1 mt-4">
+      <label for="artist" class="form-label">Artist</label>
+      <select id="artist" class="form-select" name="artist">
+        <option value="" selected disabled hidden>Select an Artist</option>
+        <% for (const artist of data.artists) { %>
+        <option value="<%= artist._id %>">
+          <%= `${artist.first_name} ${artist.last_name}` %>
+        </option>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="flex-grow-1 mt-4">
+      <label for="song" class="form-label">Song</label>
+      <select id="song" class="form-select" name="songs">
+        <option value="" selected disabled hidden>Select a Song</option>
+        <% for (const song of data.songs) { %>
+        <option value="<%= song._id %>"><%= song.title %></option>
+        <% } %>
+      </select>
+    </div>
+  </div>
+</div>

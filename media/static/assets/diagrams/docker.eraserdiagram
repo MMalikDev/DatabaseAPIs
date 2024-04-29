@@ -1,0 +1,51 @@
+cloud-architecture-diagram
+
+Client [icon: user, color: black]
+Traefik [icon: traefik, color: 24A1C1]
+
+Docker [icon: docker, color: 24A1C1] {
+    Static [icon: css3, color: blue] {
+        NGINX [icon: nginx, color: 009639]
+    }
+    
+    API [icon: api, color: red] {
+        Django [icon: django, color: 092E20]
+        FastAPI [icon: fastapi, color: 009688]
+        ExpressJS [icon: express, color: 000000]
+    }
+    
+    DB [icon: database, color: green] {
+        Redis [icon: redis, color: DC382D]
+        
+        MongoDB [icon: mongodb, color: 47A248] {
+            Mongo Express [icon: mongodb, color: 47A248]
+        }
+        
+        Postgres [icon: postgres, color: 4169E1] {
+            pgAdmin [icon: postgres, color: 4169E1]
+        }
+    }
+    
+    Data [icon: data, color: purple] {
+        Python [icon: python, color: 3776AB]
+        Javascript [icon: javascript, color: F7DF1E]
+    }
+}
+
+// Define connections
+Client > Traefik
+Traefik > Docker
+// Traefik --> NGINX, FastAPI, Django, ExpressJS, Redis, MongoDB, Postgres
+
+ExpressJS > MongoDB
+
+Django > Postgres
+
+FastAPI > Postgres
+FastAPI > MongoDB
+FastAPI > Redis
+
+NGINX < FastAPI, Django, ExpressJS
+
+Javascript > MongoDB
+Python > Postgres, MongoDB

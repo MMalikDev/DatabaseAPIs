@@ -1,0 +1,61 @@
+<div>
+  <div class="d-flex flex-wrap gap-2 justify-content-center">
+    <div class="flex-grow-1">
+      <label for="first-name" class="visually-hidden"> First Name </label>
+      <input
+        id="first-name"
+        class="form-control"
+        placeholder="First Name"
+        name="first_name"
+        type="text"
+        required
+      />
+    </div>
+
+    <div class="flex-grow-1">
+      <label for="last-name" class="visually-hidden"> Last Name </label>
+      <input
+        id="last-name"
+        class="form-control"
+        placeholder="Last Name"
+        name="last_name"
+        type="text"
+        required
+      />
+    </div>
+
+    <div class="flex-grow-1">
+      <label for="nationality" class="visually-hidden"> Nationality </label>
+      <input
+        id="nationality"
+        class="form-control"
+        placeholder="Nationality"
+        name="nationality"
+        type="text"
+        required
+      />
+    </div>
+  </div>
+
+  <div class="d-flex flex-wrap gap-2 justify-content-center">
+    <div class="flex-grow-1 mt-4">
+      <label for="album" class="form-label">Album</label>
+      <select id="album" class="form-select" name="albums">
+        <option value="" selected disabled hidden>Select an Album</option>
+        <% for (const album of data.albums) {%>
+        <option value="<%= album._id %>"><%= album.title %></option>
+        <% } %>
+      </select>
+    </div>
+
+    <div class="flex-grow-1 mt-4">
+      <label for="song" class="form-label">Song</label>
+      <select id="song" class="form-select" name="songs">
+        <option value="" selected disabled hidden>Select a Song</option>
+        <% for (const song of data.songs) { %>
+        <option value="<%= song._id %>"><%= song.title %></option>
+        <% } %>
+      </select>
+    </div>
+  </div>
+</div>

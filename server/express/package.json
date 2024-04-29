@@ -1,0 +1,33 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "main": "index.js",
+  "directories": {
+    "controllers": "controllers",
+    "configs": "configs",
+    "models": "models",
+    "routes": "routes",
+    "public": "public",
+    "views": "views",
+    "lib": "lib"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "bun index.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-winston": "^4.2.0",
+    "mongo": "^0.1.0",
+    "mongoose": "^7.5.2",
+    "winston": "^3.13.0"
+  }
+}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+<!--  -->
+
+{% block main %}
+
+<div class="wrapper">
+  <a class="btn btn-secondary" href="{% url 'blog:index'  %}">
+    &lt;- Return to list
+  </a>
+
+  {% if user.is_authenticated and user == article.owner %}
+  <div class="flex">
+    <a class="btn btn-secondary" href="{% url 'blog:update' article.pk %}">
+      Update
+    </a>
+
+    <a class="btn btn-secondary" href="{% url 'blog:delete' article.pk  %}">
+      Delete
+    </a>
+  </div>
+  {% endif %}
+
+  <h1 class="text-8xl">{{ object.title }}</h1>
+  <div class="metadata">
+    <p>ID: {{ object.id }}</p>
+    <p>Author: {{ object.owner }}</p>
+    <p>Date: {{ object.creation_date|date }}</p>
+    <p>Last Edit: {{ object.update_date|date }}</p>
+  </div>
+
+  <p>{{ object.text }}</p>
+</div>
+
+{% endblock main %}

@@ -1,0 +1,23 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "main": "index.js",
+  "directories": {
+    "database": "database",
+    "config": "config",
+    "models": "models"
+  },
+  "scripts": {
+    "start": "node index.js",
+    "dev": "bun index.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "@faker-js/faker": "^8.4.1",
+    "mongodb": "^6.5.0"
+  }
+}

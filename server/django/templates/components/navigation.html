@@ -1,0 +1,48 @@
+<nav role="navigation" aria-label="Main">
+  {% include 'components/icon/menu.html' %}
+
+  <ul id="primary-navigation" class="primary-navigation" data-state="closed">
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'common:index' %}"
+      
+        {% if request.resolver_match.namespace == 'common' %}
+        aria-current="page"
+        {% endif %}
+      >
+        Home
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'blog:index' %}"
+      
+        {% if request.resolver_match.namespace == 'blog' %}
+        aria-current="page"
+        {% endif %}
+      >
+        Blog
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'admin:index' %}"
+
+        {% if request.resolver_match.namespace == 'admin' %}
+        aria-current="page"
+        {% endif %}
+      >
+        Admin
+      </a>
+    </li>
+
+    {% if user.is_authenticated %}
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button class="btn" type="submit">Log Out</button>
+      </form>
+    {% else %}
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'login' %}"> Log In </a>
+    </li>
+    {% endif %}
+  </ul>
+</nav>

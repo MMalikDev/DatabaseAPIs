@@ -1,0 +1,229 @@
+name: development
+
+networks:
+  proxy:
+    name: $NETWORK_NAME
+    external: true
+
+volumes:
+  redis_data:
+  mongo_data:
+  mongo_config:
+  pgadmin_data:
+  postgres_data:
+
+configs:
+  pgpass:
+    content: postgres:5432:${DB_NAME}:${DB_USERNAME}:${DB_PASSWORD}
+
+  servers.json:
+    content: |
+      {
+        "Servers": {
+          "1": {
+            "Group": "Servers",
+            "Name": "Postgres",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "${DB_NAME}",
+            "Username": "${DB_USERNAME}",
+            "PassFile": "/pgpass",
+            "SSLMode": "prefer"
+          }
+        }
+      }
+
+services:
+  static:
+    build: $NGINX_IMAGE
+    image: static
+    container_name: static
+
+    networks:
+      proxy:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.static.rule=Host(`static.localhost`)"
+      - "traefik.http.services.static.loadbalancer.server.port=80"
+
+  python:
+    build: $PYTHON_IMAGE
+    image: code_py
+    container_name: python
+
+    environment:
+      THIRD_PARTY_LOGS: $THIRD_PARTY_LOGS
+      LOG_LEVEL: $LOG_LEVEL
+      DATABASE: $MONGO_DATABASE
+      NO_SQL_URI: $MONGO_URI
+      SQL_URI: $DATABASE_URI
+      SIZE: $SIZE
+
+    networks:
+      proxy:
+
+  javascript:
+    build: $JAVASCRIPT_IMAGE
+    image: code_js
+    container_name: javascript
+
+    environment:
+      DATABASE: $MONGO_DATABASE
+      DATABASE_URI: $MONGO_URI
+      SIZE: $SIZE
+
+    networks:
+      proxy:
+
+  django:
+    build: $DJANGO_IMAGE
+    image: server_django
+    container_name: django
+
+    environment:
+      ALLOWED_HOSTS: $ALLOWED_HOSTS
+      SECRET_KEY: $DJANGO_SECRET_KEY
+      DEBUG: $DEBUG
+      WEB_PORT: $DJANGO_PORT
+      STATIC_URL: $STATIC_URL
+      DATABASE_URL: $DATABASE_URI
+
+    networks:
+      proxy:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.django.rule=Host(`django.localhost`)"
+      - "traefik.http.services.django.loadbalancer.server.port=$DJANGO_PORT"
+
+  fastapi:
+    build: $FASTAPI_IMAGE
+    image: server_fastapi
+    container_name: fastapi
+
+    environment:
+      THIRD_PARTY_LOGS: $THIRD_PARTY_LOGS
+      LOG_LEVEL: $LOG_LEVEL
+      WEB_PORT: $FASTAPI_PORT
+      STATIC_URL: $STATIC_URL
+      SQL_URI: $DATABASE_URI
+      NOSQL_URI: $MONGO_URI
+
+      ALGORITHM: $ALGORITHM
+      SECRET_KEY: $FASTAPI_SECRET_KEY
+      RESET_TOKEN_EXPIRE_HOURS: $RESET_TOKEN_EXPIRE_HOURS
+      ACCESS_TOKEN_EXPIRE_MINUTES: $ACCESS_TOKEN_EXPIRE_MINUTES
+
+      OPEN_USERS: $OPEN_USERS
+
+    networks:
+      proxy:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi.rule=Host(`fastapi.localhost`)"
+      - "traefik.http.services.fastapi.loadbalancer.server.port=$FASTAPI_PORT"
+
+  express:
+    build: $EXPRESS_IMAGE
+    image: server_express
+    container_name: express
+
+    environment:
+      WEB_PORT: $EXPRESS_PORT
+      DATABASE_URI: $MONGO_URI
+
+    networks:
+      proxy:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.express.rule=Host(`express.localhost`)"
+      - "traefik.http.services.express.loadbalancer.server.port=$EXPRESS_PORT"
+
+  redis:
+    image: redis/redis-stack:7.2.0-v6
+    container_name: redis
+
+    volumes:
+      - redis_data:/data
+
+    networks:
+      proxy:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.redis.loadbalancer.server.port=8001"
+      - "traefik.http.routers.redis.rule=Host(`redis.${DOMAIN}`)"
+
+  postgres:
+    image: postgres:16-bookworm
+    container_name: postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USERNAME
+      POSTGRES_PASSWORD: $DB_PASSWORD
+
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      proxy:
+
+  pgadmin4:
+    image: dpage/pgadmin4:8
+    container_name: pgadmin
+    restart: unless-stopped
+
+    environment:
+      PGADMIN_LISTEN_PORT: 80
+      PGADMIN_DEFAULT_EMAIL: $ADMIN_EMAIL
+      PGADMIN_DEFAULT_PASSWORD: $ADMIN_PASSWORD
+
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+    configs:
+      - source: servers.json
+        target: /pgadmin4/servers.json
+      - source: pgpass
+        target: /pgpass
+
+    networks:
+      proxy:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.postgres.loadbalancer.server.port=80"
+      - "traefik.http.routers.postgres.rule=Host(`postgres.${DOMAIN:-localhost}`)"
+
+  mongo:
+    image: mongo:7
+    container_name: mongo
+
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGO_INITDB_ROOT_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+
+    volumes:
+      - mongo_data:/data/db
+      - mongo_config:/data/configdb
+
+    networks:
+      proxy:
+
+  mongo-express:
+    image: mongo-express:1.0-20
+    container_name: mongo-express
+
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_MONGODB_ADMINUSERNAME: $MONGO_INITDB_ROOT_USERNAME
+      ME_CONFIG_MONGODB_ADMINPASSWORD: $MONGO_INITDB_ROOT_PASSWORD
+
+    depends_on:
+      mongo:
+        condition: service_started
+
+    networks:
+      proxy:
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.services.mongo.loadbalancer.server.port=8081"
+      - "traefik.http.routers.mongo.rule=Host(`mongo.${DOMAIN:-localhost}`)"

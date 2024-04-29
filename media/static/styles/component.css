@@ -1,0 +1,153 @@
+.container {
+  width: 90%;
+  margin: 0 auto;
+  padding: 1rem 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.wrapper {
+  flex: 1;
+  text-align: center;
+}
+
+.flex {
+  gap: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  font-size: 4rem;
+  font-weight: 300;
+}
+
+a.download {
+  display: none;
+}
+
+/* Buttons */
+.btn {
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.btn:focus {
+  outline: var(--color-info-subtle) solid 2px;
+}
+.btn:hover {
+  opacity: 60%;
+}
+.btn:active {
+  opacity: 40%;
+}
+
+.btn-theme {
+  margin: auto;
+  padding: 0.25rem;
+  height: fit-content;
+}
+.btn-primary {
+  color: var(--color-primary-emphasis);
+  background-color: var(--color-primary-subtle);
+}
+.btn-secondary {
+  color: var(--color-secondary-emphasis);
+  background-color: var(--color-secondary-subtle);
+}
+
+/* Tabs */
+.tabs {
+  display: grid;
+  margin: 0 auto;
+  width: fit-content;
+  place-items: center;
+  border-radius: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.tablist {
+  width: 100%;
+  display: flex;
+  border-radius: 1rem 1rem 0 0;
+  color: var(--tabs-color);
+  background-color: var(--tabs-color-bg);
+}
+
+.tab {
+  flex-grow: 1;
+  opacity: 40%;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 1rem 1rem 0 0;
+  color: inherit;
+  background-color: inherit;
+  transition: var(--transition);
+}
+
+.tab:focus {
+  opacity: 100%;
+  text-decoration: underline;
+}
+.tab:active,
+.tab[aria-selected="true"] {
+  opacity: 100%;
+  background-color: var(--tabs-color-active);
+}
+
+.panels {
+  width: fit-content;
+}
+
+/* Forms */
+.form {
+  gap: 1rem;
+  display: grid;
+  padding: 1rem;
+  margin: 0 auto;
+  width: fit-content;
+  place-items: center;
+  border-radius: 1rem;
+  color: var(--form-color);
+  background-color: var(--form-color-bg);
+}
+.form-group {
+  gap: 1rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Inputs */
+input,
+select {
+  width: 100%;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  color: var(--input-color);
+  background-color: var(--input-color-bg);
+  border: var(--input-color-border) solid 1px;
+}
+
+input:hover,
+input:focus,
+select:hover,
+select:focus {
+  outline: var(--color-info-subtle) solid 2px;
+}
+
+/* ----------------------------------------------------------------- */
+/* Media Query                                                       */
+/* ----------------------------------------------------------------- */
+@media (min-width: 600px) {
+  .form-group {
+    flex-direction: row;
+  }
+}

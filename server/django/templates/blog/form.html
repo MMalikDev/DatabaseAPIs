@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+<!--  -->
+
+{% block main %}
+
+<div class="wrapper">
+  <h1 class="text-8xl">Submit Article</h1>
+  <form class="form" method="post">
+    {% csrf_token %} {{ form }}
+
+    <div class="form-group">
+      <button class="btn btn-primary" type="submit">Submit</button>
+    </div>
+  </form>
+</div>
+
+{% endblock main %}

@@ -1,0 +1,30 @@
+# API
+uvicorn[standard]
+python-multipart
+FastApi
+jinja2
+
+# Testing
+pytest
+httpx
+
+# Security
+passlib
+PyJWT
+
+# Cache
+redis
+
+# Synchronous SQL
+sqlalchemy
+psycopg2-binary
+
+# Asynchronous SQL
+sqlalchemy[asyncio]
+asyncpg
+
+# Synchronous NoSQL
+pymongo
+
+# Asynchronous NoSQL
+motor
