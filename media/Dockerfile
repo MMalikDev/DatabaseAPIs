@@ -1,5 +1,5 @@
 ARG VERSION=stable-alpine
-FROM nginx:$VERSION as builder
+FROM nginx:$VERSION AS builder
 
 WORKDIR /server
 
